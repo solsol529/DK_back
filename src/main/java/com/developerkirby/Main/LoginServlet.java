@@ -1,4 +1,4 @@
-package com.developerkirby;
+package com.developerkirby.Main;
 import java.io.IOException;
 import java.io.PrintWriter;
 

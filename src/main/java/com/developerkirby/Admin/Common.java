@@ -1,4 +1,4 @@
-package com.developerkirby;
+package com.developerkirby.Admin;
 
 import java.io.BufferedReader;
 import java.sql.Connection;

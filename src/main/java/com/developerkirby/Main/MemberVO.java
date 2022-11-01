@@ -1,4 +1,4 @@
-package com.developerkirby;
+package com.developerkirby.Main;
 import java.sql.Date;
 
 public class MemberVO {
