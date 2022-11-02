@@ -1,6 +1,7 @@
 package com.developerkirby.Admin.VO;
 
 import java.sql.Date;
+import java.util.List;
 
 public class AdminWriteVO {
 	private int writeNum;
@@ -9,6 +10,9 @@ public class AdminWriteVO {
 	private Date writeDate;
 	private int countComment;
 	private int countGood;
+	private String boardName;
+	private String writeContents;
+	private String[] commentList;
 	
 	public int getWriteNum() {
 		return writeNum;
@@ -46,4 +50,23 @@ public class AdminWriteVO {
 	public void setCountGood(int countGood) {
 		this.countGood = countGood;
 	}
+	public String getBoardName() {
+		return boardName;
+	}
+	public void setBoardName(String boardName) {
+		this.boardName = boardName;
+	}
+	public String getWriteContents() {
+		return writeContents;
+	}
+	public void setWriteContents(String writeContents) {
+		this.writeContents = writeContents;
+	}
+	public String[] getCommentList() {
+		return commentList;
+	}
+	public void setCommentList(String[] commentList) {
+		this.commentList = commentList;
+	}
+	
 }

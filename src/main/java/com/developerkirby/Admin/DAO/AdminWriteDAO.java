@@ -47,29 +47,28 @@ public class AdminWriteDAO {
 		return list;
 	}
 	
-	public List<AdminBoardVO> writeSearchSelect(String target) {
-		List<AdminBoardVO> list = new ArrayList<>();
+	public List<AdminWriteVO> writeSearchSelect(String target) {
+		List<AdminWriteVO> list = new ArrayList<>();
 		try {
 			conn = Common.getConnection();
-			String sql = "SELECT BOARD_NAME \"게시판\", COUNT(*) \"게시글수\" FROM WRITE \r\n"
-					+ "WHERE BOARD_NAME LIKE ? GROUP BY BOARD_NAME \r\n"
-					+ "UNION SELECT BOARD_NAME \"게시판\", 0 \"게시글수\" \r\n"
-					+ "FROM BOARD WHERE BOARD_NAME NOT IN (SELECT BOARD_NAME FROM WRITE GROUP BY BOARD_NAME) \r\n"
-					+ "AND BOARD_NAME LIKE ? ORDER BY \"게시글수\" DESC";
+			String sql = "SELECT WRITE_NUM \"글번호\", WRITE_NAME \"글제목\", WRITE_DATE \"작성일\", NICKNAME \"작성자\"\r\n"
+					+ "FROM WRITE W, MEMBER M WHERE W.MEMBER_NUM = M.MEMBER_NUM AND\r\n"
+					+ "(NICKNAME LIKE ? OR WRITE_NAME LIKE ?) ORDER BY WRITE_NUM";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, '%'+target+'%');
 			pstmt.setString(2, '%'+target+'%');
 			rs = pstmt.executeQuery();
-			int cnt = 1;
 			while(rs.next()) {
-				int boardNum = cnt++;
-				String boardName = rs.getString("게시판");
-				int CountWrite = rs.getInt("게시글수");
-				
-				AdminBoardVO vo = new AdminBoardVO();
-				vo.setBoardNum(boardNum);
-				vo.setBoardName(boardName);
-				vo.setCountWrite(CountWrite);
+				int writeNum = rs.getInt("글번호");
+				String writeName = rs.getString("글제목");
+				Date writeDate = rs.getDate("작성일");
+				String nickname = rs.getString("작성자");
+
+				AdminWriteVO vo = new AdminWriteVO();
+				vo.setWriteNum(writeNum);
+				vo.setWriteName(writeName);
+				vo.setWriteDate(writeDate);
+				vo.setNickname(nickname);
 				list.add(vo);
 			}
 			Common.close(rs);
@@ -120,24 +119,53 @@ public class AdminWriteDAO {
 		}
 	}
 	
-	public List<AdminWriteVO> writeDetail(int writeNum) {
+	public List<AdminWriteVO> writeDetail(String target) {
 		List<AdminWriteVO> list = new ArrayList<>();
 		try {
 			conn = Common.getConnection();
-			String sql = "";
+			String sql = "SELECT COUNT(*) \"좋아요수\", W.WRITE_NUM \"게시글번호\", BOARD_NAME \"게시판명\", \r\n"
+					+ "WRITE_NAME \"게시글명\", NICKNAME \"글작성자\", \r\n"
+					+ "WRITE_DATE \"작성일\", WRITE_CONTENTS \"글내용\",\r\n"
+					+ "(SELECT COUNT(*) FROM COMMENTS C WHERE C.WRITE_NUM = W.WRITE_NUM) \"댓글수\"\r\n"
+					+ "FROM MEMBER M, WRITE W, (SELECT DISTINCT * FROM GOOD) G\r\n"
+					+ "WHERE M.MEMBER_NUM = W.MEMBER_NUM AND G.WRITE_NUM = W.WRITE_NUM AND W.WRITE_NUM = ?\r\n"
+					+ "GROUP BY W.WRITE_NUM, BOARD_NAME, WRITE_NAME, NICKNAME, WRITE_DATE, WRITE_CONTENTS";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, writeNum);
+			if(target.matches("[+-]?\\d*(\\.\\d+)?")) pstmt.setInt(1, Integer.parseInt(target));
+			// 문자열이 정규식을 만족하면(숫자로만 이루어진 문자열이면)
+			else pstmt.setInt(1, 0);
 			rs = pstmt.executeQuery();
-			int cnt = 1;
-			while(rs.next()) {
-				int boardNum = cnt++;
-				String boardName = rs.getString("게시판");
-				int CountWrite = rs.getInt("게시글수");
-				
-				AdminWriteVO vo = new AdminWriteVO();
-				vo.setWriteDate(null);
-				list.add(vo);
-			}
+			
+			PreparedStatement pstmt1 = null;
+			ResultSet rs1 = null;
+			String sql1 = "";
+			pstmt1 = conn.prepareStatement(sql1);
+			if(target.matches("[+-]?\\d*(\\.\\d+)?")) pstmt1.setInt(1, Integer.parseInt(target));
+			else pstmt1.setInt(1, 0);
+			rs1 = pstmt.executeQuery();
+			rs1.next();
+			
+			rs.next();
+			AdminWriteVO vo = new AdminWriteVO();
+			int writeNum = rs.getInt("게시글번호");
+			String writeName = rs.getString("게시글명");
+			String nickname = rs.getString("글작성자");
+			Date writeDate = rs.getDate("작성일");
+			int countComment = rs.getInt("댓글수");
+			int countGood = rs.getInt("좋아요수");
+			String boardName = rs.getString("게시판명");
+			String writeContents = rs.getString("글내용");
+			
+			vo.setWriteNum(writeNum);
+			vo.setWriteName(writeName);
+			vo.setNickname(nickname);
+			vo.setWriteDate(writeDate);
+			vo.setCountComment(countComment);
+			vo.setCountGood(countGood);
+			vo.setBoardName(boardName);
+			vo.setWriteContents(writeContents);
+			list.add(vo);
+			
 			Common.close(rs);
 			Common.close(pstmt);
 			Common.close(conn);

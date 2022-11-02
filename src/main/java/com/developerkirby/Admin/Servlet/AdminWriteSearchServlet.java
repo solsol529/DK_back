@@ -18,10 +18,10 @@ import com.developerkirby.Admin.Common;
 import com.developerkirby.Admin.DAO.AdminWriteDAO;
 import com.developerkirby.Admin.VO.AdminWriteVO;
 
-@WebServlet("/AdminWriteDetailServlet")
-public class AdminWriteDetailServlet extends HttpServlet {
+@WebServlet("/AdminWriteSearchServlet")
+public class AdminWriteSearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    
+       
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
@@ -32,7 +32,6 @@ public class AdminWriteDetailServlet extends HttpServlet {
 	
 	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		request.setCharacterEncoding("utf-8");
 		// CORS 접근 허용
 		Common.corsResSet(response);
@@ -41,29 +40,27 @@ public class AdminWriteDetailServlet extends HttpServlet {
 		// 요청 받은 메시지 JSON 파싱
 		JSONObject jsonObj = Common.getJsonObj(sb); // 여기까지가 공통 루틴
 		
-		String reqCmd = (String)jsonObj.get("target"); // 요청된 명령어(cmd)를 받음
+		String reqCmd = (String)jsonObj.get("target"); // 요청된 target를 받음
 		PrintWriter out = response.getWriter(); // 출력을 위해 만듦, 출력 스트림에 텍스트를 보내겠다는 뜻
 		
+		System.out.print(reqCmd);
+		
 		AdminWriteDAO dao = new AdminWriteDAO();
-		List<AdminWriteVO> list = dao.writeDetail(reqCmd);
+		List<AdminWriteVO> list = dao.writeSearchSelect(reqCmd);
 		JSONArray writeArray = new JSONArray();
 		
 		for(AdminWriteVO e : list) {
 			JSONObject writeInfo = new JSONObject();
-			
 			writeInfo.put("writeNum", e.getWriteNum());
 			writeInfo.put("writeName", e.getWriteName());
 			SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
 			String dateToStr = sdf.format(e.getWriteDate());
 			writeInfo.put("writeDate", dateToStr);
 			writeInfo.put("nickname", e.getNickname());
-			writeInfo.put("boardName", e.getBoardName());
-			writeInfo.put("countComment", e.getCountComment());
-			writeInfo.put("countGood", e.getCountGood());
-			writeInfo.put("writeContents", e.getWriteContents());
 			
 			writeArray.add(writeInfo);
 		}
 		out.print(writeArray);
 	}
+
 }
