@@ -12,7 +12,7 @@ public class AdminWriteVO {
 	private int countGood;
 	private String boardName;
 	private String writeContents;
-	private String[] commentList;
+	private List<AdminCommentVO> comments;
 	
 	public int getWriteNum() {
 		return writeNum;
@@ -62,11 +62,10 @@ public class AdminWriteVO {
 	public void setWriteContents(String writeContents) {
 		this.writeContents = writeContents;
 	}
-	public String[] getCommentList() {
-		return commentList;
+	public List<AdminCommentVO> getComments() {
+		return comments;
 	}
-	public void setCommentList(String[] commentList) {
-		this.commentList = commentList;
+	public void setComments(List<AdminCommentVO> comments) {
+		this.comments = comments;
 	}
-	
 }

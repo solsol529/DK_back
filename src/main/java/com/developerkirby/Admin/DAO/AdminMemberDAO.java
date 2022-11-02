@@ -120,4 +120,26 @@ public class AdminMemberDAO {
 		} catch (Exception e) { e.printStackTrace();}
 		return list;
 	}
+	
+	public boolean logingCheck(String nickname, String pwd) {
+		try {
+			conn = Common.getConnection();
+			String sql = "SELECT * FROM MEMBER WHERE MEMBER_NUM = 1 AND NICKNAME = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, nickname);
+			rs = pstmt.executeQuery();
+        	
+        	while(rs.next()) {
+        		String sqlId = rs.getString("nickname");
+        		String sqlPwd = rs.getString("PWD");
+        		System.out.println("ID : " + sqlId);
+        		System.out.println("PWD : " + sqlPwd);
+        		if(nickname.equals(sqlId) && pwd.equals(sqlPwd)) return true;	
+        	}
+        	Common.close(rs);
+			Common.close(stmt);
+			Common.close(conn);
+		} catch (Exception e) { e.printStackTrace();}
+		return false;
+	}
 }

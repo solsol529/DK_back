@@ -5,11 +5,13 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.developerkirby.Admin.Common;
 import com.developerkirby.Admin.VO.AdminBoardVO;
+import com.developerkirby.Admin.VO.AdminCommentVO;
 import com.developerkirby.Admin.VO.AdminWriteVO;
 
 public class AdminWriteDAO {
@@ -82,36 +84,32 @@ public class AdminWriteDAO {
 	public void writeDelete(String target) {
 		String[] targetArr = target.split(",");
 		for(String targetStr : targetArr) {
+			int tar;
+			if(targetStr.matches("[+-]?\\d*(\\.\\d+)?")) 
+				tar = Integer.parseInt(targetStr);
+	         // 문자열이 정규식을 만족하면(숫자로만 이루어진 문자열이면)
+	         else tar = 0;
 			try {
 				conn = Common.getConnection();
 				PreparedStatement pstmt1 = null;
-				String sql1 = "DELETE FROM GOOD WHERE WRITE_NUM \r\n"
-						+ "IN (SELECT WRITE_NUM FROM WRITE WHERE BOARD_NAME IN (?))";
+				String sql1 = "DELETE FROM GOOD WHERE WRITE_NUM = ?";
 				pstmt1 = conn.prepareStatement(sql1);
-				pstmt1.setString(1, targetStr);
+				pstmt1.setInt(1, tar);
 				pstmt1.executeUpdate();
 				
 				PreparedStatement pstmt2 = null;
-				String sql2 = "DELETE FROM COMMENTS WHERE WRITE_NUM IN "
-						+ "(SELECT WRITE_NUM FROM WRITE WHERE BOARD_NAME IN (?))";
+				String sql2 = "DELETE FROM COMMENTS WHERE WRITE_NUM = ?";
 				pstmt2 = conn.prepareStatement(sql2);
-				pstmt2.setString(1, targetStr);
+				pstmt2.setInt(1, tar);
 				pstmt2.executeUpdate();
 				
-				PreparedStatement pstmt3 = null;
-				String sql3 = "DELETE FROM WRITE WHERE BOARD_NAME IN (?)";
-				pstmt3 = conn.prepareStatement(sql3);
-				pstmt3.setString(1, targetStr);
-				pstmt3.executeUpdate();
-				
-				String sql = "DELETE FROM BOARD WHERE BOARD_NAME IN (?)";
+				String sql = "DELETE FROM WRITE WHERE WRITE_NUM = ?";
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, targetStr);
+				pstmt.setInt(1, tar);
 				pstmt.executeUpdate();
 				
 				Common.close(pstmt1);
 				Common.close(pstmt2);
-				Common.close(pstmt3);
 				Common.close(pstmt);
 				Common.close(conn);
 				
@@ -136,14 +134,32 @@ public class AdminWriteDAO {
 			else pstmt.setInt(1, 0);
 			rs = pstmt.executeQuery();
 			
+			List<AdminCommentVO> commentList = new ArrayList<>();
 			PreparedStatement pstmt1 = null;
 			ResultSet rs1 = null;
-			String sql1 = "";
+			String sql1 = "SELECT NICKNAME \"댓글작성자\", COMMENT_CONTENT \"댓글내용\", \r\n"
+					+ "C.WRITE_DATE \"댓글작성일\" \r\n"
+					+ "FROM COMMENTS C, MEMBER M, WRITE W\r\n"
+					+ "WHERE C.WRITE_NUM = W.WRITE_NUM AND C.MEMBER_NUM = M.MEMBER_NUM\r\n"
+					+ "AND W.WRITE_NUM = ? ";
+			
 			pstmt1 = conn.prepareStatement(sql1);
 			if(target.matches("[+-]?\\d*(\\.\\d+)?")) pstmt1.setInt(1, Integer.parseInt(target));
 			else pstmt1.setInt(1, 0);
-			rs1 = pstmt.executeQuery();
-			rs1.next();
+			rs1 = pstmt1.executeQuery();
+			while(rs1.next()) {
+				AdminCommentVO vo = new AdminCommentVO();
+				
+				String nickname = rs1.getString("댓글작성자");
+				String commentContent = rs1.getString("댓글내용");
+				Date writeDate = rs1.getDate("댓글작성일");
+				SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
+				String dateToStr = sdf.format(writeDate);
+				vo.setNickname(nickname);
+				vo.setCommentContent(commentContent);
+				vo.setWriteDateStr(dateToStr);
+				commentList.add(vo);
+			}
 			
 			rs.next();
 			AdminWriteVO vo = new AdminWriteVO();
@@ -164,6 +180,8 @@ public class AdminWriteDAO {
 			vo.setCountGood(countGood);
 			vo.setBoardName(boardName);
 			vo.setWriteContents(writeContents);
+			vo.setComments(commentList);
+			
 			list.add(vo);
 			
 			Common.close(rs);

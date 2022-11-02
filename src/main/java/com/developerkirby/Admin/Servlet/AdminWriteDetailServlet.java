@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 
 import com.developerkirby.Admin.Common;
 import com.developerkirby.Admin.DAO.AdminWriteDAO;
+import com.developerkirby.Admin.VO.AdminCommentVO;
 import com.developerkirby.Admin.VO.AdminWriteVO;
 
 @WebServlet("/AdminWriteDetailServlet")
@@ -50,7 +51,14 @@ public class AdminWriteDetailServlet extends HttpServlet {
 		
 		for(AdminWriteVO e : list) {
 			JSONObject writeInfo = new JSONObject();
-			
+			JSONArray commentsArray = new JSONArray();
+			for(AdminCommentVO el : e.getComments()) {
+				JSONObject commentsInfo = new JSONObject();
+				commentsInfo.put("nickname", el.getNickname());
+				commentsInfo.put("writeDate", el.getWriteDateStr());
+				commentsInfo.put("commentContent", el.getCommentContent());
+				commentsArray.add(commentsInfo);
+			}
 			writeInfo.put("writeNum", e.getWriteNum());
 			writeInfo.put("writeName", e.getWriteName());
 			SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
@@ -61,7 +69,7 @@ public class AdminWriteDetailServlet extends HttpServlet {
 			writeInfo.put("countComment", e.getCountComment());
 			writeInfo.put("countGood", e.getCountGood());
 			writeInfo.put("writeContents", e.getWriteContents());
-			
+			writeInfo.put("comments", commentsArray);
 			writeArray.add(writeInfo);
 		}
 		out.print(writeArray);
