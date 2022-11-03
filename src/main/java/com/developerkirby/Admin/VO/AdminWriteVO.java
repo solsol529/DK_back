@@ -13,6 +13,7 @@ public class AdminWriteVO {
 	private String boardName;
 	private String writeContents;
 	private List<AdminCommentVO> comments;
+	private String writeDateStr;
 	
 	public int getWriteNum() {
 		return writeNum;
@@ -67,5 +68,11 @@ public class AdminWriteVO {
 	}
 	public void setComments(List<AdminCommentVO> comments) {
 		this.comments = comments;
+	}
+	public String getWriteDateStr() {
+		return writeDateStr;
+	}
+	public void setWriteDateStr(String writeDateStr) {
+		this.writeDateStr = writeDateStr;
 	}
 }
