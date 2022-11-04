@@ -1,4 +1,4 @@
-package com.developerkirby.Main;
+package com.developerkirby.Main.Servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
+
+import com.developerkirby.Main.Common;
+import com.developerkirby.Main.DAO.MemberDAO;
+import com.developerkirby.Main.VO.MemberVO;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
@@ -23,6 +27,7 @@ public class LoginServlet extends HttpServlet {
 		Common.corsResSet(response);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8"); // 한글이 들어올수도 있으니 utf-8
 		// CORS 접근 허용, 해킹의도로 판단하는것을 풀기 위해서
@@ -38,18 +43,22 @@ public class LoginServlet extends HttpServlet {
 		System.out.println("닉네임: "+getNickname);
 		System.out.println("비밀번호: "+getPwd);
 		
-		MemberDAO dao = new MemberDAO();
-		boolean isRegister = dao.logingCheck(getNickname, getPwd);
-		
 		PrintWriter out = response.getWriter();
 		// json object에 넣어줘야함
 		JSONObject resJson = new JSONObject();
 		
-		if(isRegister) {
+		MemberDAO dao = new MemberDAO();
+		MemberVO memberInfo = dao.logingCheck(getNickname, getPwd);
+		
+		System.out.println("db닉네임: "+ memberInfo.getNickname());
+		System.out.println("db비밀번호: "+ memberInfo.getPwd());
+		
+		if(getNickname.equals(memberInfo.getNickname()) && 
+				getPwd.equalsIgnoreCase(memberInfo.getPwd())) {
 			resJson.put("result", "OK");
+			resJson.put("memberNum", memberInfo.getMemberNum());
 			System.out.println("로그인 성공");
-		}
-		else {
+		} else {
 			resJson.put("result", "NOK");
 			System.out.println("로그인 실패");
 		}
