@@ -41,59 +41,15 @@ public class MemberDAO {
 		return memberInfo;	
 	}
 
-	public List<MemberVO> memberSelect(String reqId) {
-		List<MemberVO> list = new ArrayList<>();
-		try {
-			System.out.println("애초에 try를 안타나?");
-			System.out.println(reqId);
-			conn = Common.getConnection();
-			String sql = "SELECT W.MEMBER_NUM, NICKNAME, PWD, REG_DATE, EMAIL, PHONE, GRADE, COUNT(*) FROM WRITE W, \r\n"
-					+ "MEMBER M, MEMGRADE G WHERE M.MEMBER_NUM = W.MEMBER_NUM AND NICKNAME = ? \r\n"
-					+ "AND (SELECT COUNT(*) FROM WRITE W GROUP BY W.MEMBER_NUM HAVING W.MEMBER_NUM = M.MEMBER_NUM) \r\n"
-					+ "BETWEEN LOWRITE AND HIWRITE GROUP BY W.MEMBER_NUM, NICKNAME, GRADE, PWD, REG_DATE, EMAIL, PHONE";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, reqId);
-			rs = pstmt.executeQuery();
-			
-			if (rs.next()) {
-				System.out.println("rs.next가 있나?");
-				int member_num = rs.getInt("MEMBER_NUM");
-				String nickname = rs.getString("NICKNAME");
-				String pwd = rs.getString("PWD");
-				Date reg_date = rs.getDate("REG_DATE");
-				String email = rs.getString("EMAIL");
-				String phone = rs.getString("PHONE");
-				String grade = rs.getString("GRADE");
-				
-				MemberVO vo = new MemberVO();
-				vo.setMemberNum(member_num);
-				vo.setNickname(nickname);
-				vo.setPwd(pwd);
-				vo.setRegDate(reg_date);
-				vo.setEmail(email);
-				vo.setPhone(phone);
-				vo.setGrade(grade);
-				list.add(vo);
-			} else {
-				System.out.println("rs.next가 없나?");
-			}
-			Common.close(rs);
-			Common.close(stmt);
-			Common.close(conn);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
 	
-	public boolean memberDelete(String pwd) {
+	public boolean memberDelete(String memberNum) {
 		int result = 0;
-		String sql = "DELETE FROM MEMBER WHERE PWD = ?";
+		String sql = "DELETE FROM MEMBER WHERE MEMBER_NUM = ?";
 		
 		try {
 			conn = Common.getConnection();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, pwd);
+			pstmt.setString(1, memberNum);
 			result = pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

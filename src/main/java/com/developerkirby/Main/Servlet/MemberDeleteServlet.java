@@ -36,10 +36,10 @@ public class MemberDeleteServlet extends HttpServlet {
 		JSONObject jsonObj = Common.getJsonObj(sb);
 		
 		//String getNickname = (String)jsonObj.get("nickname");
-		String getPwd = (String)jsonObj.get("pwd");
+		String getMemberNum = (String)jsonObj.get("target");
 		
 		MemberDAO dao = new MemberDAO();
-		boolean isDelComplete = dao.memberDelete(getPwd);
+		boolean isDelComplete = dao.memberDelete(getMemberNum);
 		
 		PrintWriter out = response.getWriter();
 		JSONObject resJson = new JSONObject();
