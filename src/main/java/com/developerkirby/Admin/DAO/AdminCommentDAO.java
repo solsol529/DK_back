@@ -17,7 +17,7 @@ public class AdminCommentDAO {
 	private Statement stmt = null;
 	private ResultSet rs = null;
 	private PreparedStatement pstmt = null;
-	
+
 	public List<AdminCommentVO> commentSelect() {
 		List<AdminCommentVO> list = new ArrayList<>();
 		try {
@@ -32,7 +32,7 @@ public class AdminCommentDAO {
 				String nickname = rs.getString("작성자");
 				String commentContent = rs.getString("댓글내용");
 				Date writeDate = rs.getDate("작성일");
-				
+
 				AdminCommentVO vo = new AdminCommentVO();
 				vo.setCommentNum(commentNum);
 				vo.setWriteNum(writeNum);
@@ -44,7 +44,7 @@ public class AdminCommentDAO {
 			Common.close(rs);
 			Common.close(pstmt);
 			Common.close(conn);
-			
+
 		} catch (Exception e) { e.printStackTrace();}
 		return list;
 	}
@@ -58,14 +58,14 @@ public class AdminCommentDAO {
 			pstmt.setString(1, '%'+target+'%');
 			pstmt.setString(2, '%'+target+'%');
 			rs = pstmt.executeQuery();
-			
+
 			while(rs.next()) {
 				int commentNum = rs.getInt("댓글번호");
 				int writeNum = rs.getInt("원글번호");
 				String nickname = rs.getString("작성자");
 				String commentContent = rs.getString("댓글내용");
 				Date writeDate = rs.getDate("작성일");
-				
+
 				AdminCommentVO vo = new AdminCommentVO();
 				vo.setCommentNum(commentNum);
 				vo.setWriteNum(writeNum);
@@ -77,16 +77,16 @@ public class AdminCommentDAO {
 			Common.close(rs);
 			Common.close(pstmt);
 			Common.close(conn);
-			
+
 		} catch (Exception e) { e.printStackTrace();}
 		return list;
 	}
-	
+
 	public void commentDelete(String target) {
 		String[] targetArr = target.split(",");
 		for(String targetStr : targetArr) {
 			int tar;
-			if(targetStr.matches("[+-]?\\d*(\\.\\d+)?")) 
+			if(targetStr.matches("[+-]?\\d*(\\.\\d+)?"))
 				tar = Integer.parseInt(targetStr);
 	         // 문자열이 정규식을 만족하면(숫자로만 이루어진 문자열이면)
 	         else tar = 0;
@@ -96,10 +96,10 @@ public class AdminCommentDAO {
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, tar);
 				pstmt.executeUpdate();
-				
+
 				Common.close(pstmt);
 				Common.close(conn);
-				
+
 			} catch (Exception e) { e.printStackTrace();}
 		}
 	}

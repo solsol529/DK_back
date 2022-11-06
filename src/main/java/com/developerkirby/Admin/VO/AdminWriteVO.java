@@ -14,7 +14,7 @@ public class AdminWriteVO {
 	private String writeContents;
 	private List<AdminCommentVO> comments;
 	private String writeDateStr;
-	
+
 	public int getWriteNum() {
 		return writeNum;
 	}

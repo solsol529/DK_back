@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.developerkirby.Admin.Common;
-import com.developerkirby.Admin.VO.AdminBoardVO;
 import com.developerkirby.Admin.VO.AdminCommentVO;
 import com.developerkirby.Admin.VO.AdminWriteVO;
 
@@ -19,7 +18,7 @@ public class AdminWriteDAO {
 	private Statement stmt = null;
 	private ResultSet rs = null;
 	private PreparedStatement pstmt = null;
-	
+
 	public List<AdminWriteVO> writeSelect() {
 		List<AdminWriteVO> list = new ArrayList<>();
 		try {
@@ -44,11 +43,11 @@ public class AdminWriteDAO {
 			Common.close(rs);
 			Common.close(pstmt);
 			Common.close(conn);
-			
+
 		} catch (Exception e) { e.printStackTrace();}
 		return list;
 	}
-	
+
 	public List<AdminWriteVO> writeSearchSelect(String target) {
 		List<AdminWriteVO> list = new ArrayList<>();
 		try {
@@ -76,16 +75,16 @@ public class AdminWriteDAO {
 			Common.close(rs);
 			Common.close(pstmt);
 			Common.close(conn);
-			
+
 		} catch (Exception e) { e.printStackTrace();}
 		return list;
 	}
-	
+
 	public void writeDelete(String target) {
 		String[] targetArr = target.split(",");
 		for(String targetStr : targetArr) {
 			int tar;
-			if(targetStr.matches("[+-]?\\d*(\\.\\d+)?")) 
+			if(targetStr.matches("[+-]?\\d*(\\.\\d+)?"))
 				tar = Integer.parseInt(targetStr);
 	         // 문자열이 정규식을 만족하면(숫자로만 이루어진 문자열이면)
 	         else tar = 0;
@@ -96,27 +95,27 @@ public class AdminWriteDAO {
 				pstmt1 = conn.prepareStatement(sql1);
 				pstmt1.setInt(1, tar);
 				pstmt1.executeUpdate();
-				
+
 				PreparedStatement pstmt2 = null;
 				String sql2 = "DELETE FROM COMMENTS WHERE WRITE_NUM = ?";
 				pstmt2 = conn.prepareStatement(sql2);
 				pstmt2.setInt(1, tar);
 				pstmt2.executeUpdate();
-				
+
 				String sql = "DELETE FROM WRITE WHERE WRITE_NUM = ?";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, tar);
 				pstmt.executeUpdate();
-				
+
 				Common.close(pstmt1);
 				Common.close(pstmt2);
 				Common.close(pstmt);
 				Common.close(conn);
-				
+
 			} catch (Exception e) { e.printStackTrace();}
 		}
 	}
-	
+
 	public List<AdminWriteVO> writeDetail(String target) {
 		List<AdminWriteVO> list = new ArrayList<>();
 		try {
@@ -133,7 +132,7 @@ public class AdminWriteDAO {
 			// 문자열이 정규식을 만족하면(숫자로만 이루어진 문자열이면)
 			else pstmt.setInt(1, 0);
 			rs = pstmt.executeQuery();
-			
+
 			List<AdminCommentVO> commentList = new ArrayList<>();
 			PreparedStatement pstmt1 = null;
 			ResultSet rs1 = null;
@@ -142,14 +141,14 @@ public class AdminWriteDAO {
 					+ "FROM COMMENTS C, MEMBER M, WRITE W\r\n"
 					+ "WHERE C.WRITE_NUM = W.WRITE_NUM AND C.MEMBER_NUM = M.MEMBER_NUM\r\n"
 					+ "AND W.WRITE_NUM = ? ";
-			
+
 			pstmt1 = conn.prepareStatement(sql1);
 			if(target.matches("[+-]?\\d*(\\.\\d+)?")) pstmt1.setInt(1, Integer.parseInt(target));
 			else pstmt1.setInt(1, 0);
 			rs1 = pstmt1.executeQuery();
 			while(rs1.next()) {
 				AdminCommentVO vo = new AdminCommentVO();
-				
+
 				String nickname = rs1.getString("댓글작성자");
 				String commentContent = rs1.getString("댓글내용");
 				Date writeDate = rs1.getDate("댓글작성일");
@@ -160,7 +159,7 @@ public class AdminWriteDAO {
 				vo.setWriteDateStr(dateToStr);
 				commentList.add(vo);
 			}
-			
+
 			rs.next();
 			AdminWriteVO vo = new AdminWriteVO();
 			int writeNum = rs.getInt("게시글번호");
@@ -171,7 +170,7 @@ public class AdminWriteDAO {
 			int countGood = rs.getInt("좋아요수");
 			String boardName = rs.getString("게시판명");
 			String writeContents = rs.getString("글내용");
-			
+
 			vo.setWriteNum(writeNum);
 			vo.setWriteName(writeName);
 			vo.setNickname(nickname);
@@ -181,13 +180,13 @@ public class AdminWriteDAO {
 			vo.setBoardName(boardName);
 			vo.setWriteContents(writeContents);
 			vo.setComments(commentList);
-			
+
 			list.add(vo);
-			
+
 			Common.close(rs);
 			Common.close(pstmt);
 			Common.close(conn);
-			
+
 		} catch (Exception e) { e.printStackTrace();}
 		return list;
 	}

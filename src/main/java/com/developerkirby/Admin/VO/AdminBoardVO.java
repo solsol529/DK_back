@@ -7,7 +7,7 @@ public class AdminBoardVO {
 	private String boardName;
 	private int CountWrite;
 	private List<AdminWriteVO> writes;
-	
+
 	public int getBoardNum() {
 		return boardNum;
 	}
@@ -32,5 +32,5 @@ public class AdminBoardVO {
 	public void setWrites(List<AdminWriteVO> writes) {
 		this.writes = writes;
 	}
-	
+
 }

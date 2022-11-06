@@ -9,7 +9,7 @@ public class AdminCommentVO {
 	private String commentContent;
 	private Date writeDate;
 	private String writeDateStr;
-	
+
 	public int getWriteNum() {
 		return writeNum;
 	}

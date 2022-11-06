@@ -13,7 +13,7 @@ public class AdminMemberVO {
 	private Date regDate;
 	private String pfImg;
 	private String isAdOk;
-	
+
 	public int getMemberNum() {
 		return memberNum;
 	}

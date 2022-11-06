@@ -13,7 +13,7 @@ public class MemberVO {
 	private Date regDate;
 	private String pfImg;
 	private String isAdOk;
-	
+
 	public int getMemberNum() {
 		return memberNum;
 	}
@@ -80,4 +80,4 @@ public class MemberVO {
 	public void setIsAdOk(String isAdOk) {
 		this.isAdOk = isAdOk;
 	}
-}	
+}

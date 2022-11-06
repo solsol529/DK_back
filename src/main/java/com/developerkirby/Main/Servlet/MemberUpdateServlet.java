@@ -18,30 +18,33 @@ import com.developerkirby.Main.DAO.MemberDAO;
 public class MemberUpdateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
-	
+
+	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Common.corsResSet(response);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		Common.corsResSet(response);
 		StringBuffer sb = Common.reqStringBuff(request);
 		JSONObject jsonObj = Common.getJsonObj(sb);
-		
+
 		String value = (String)jsonObj.get("value");
 		String type = (String)jsonObj.get("type");
 		String nickname = (String)jsonObj.get("nickname");
-		
+
 		System.out.println("Type : " + type + " Value : " + value);
-		
+
 		MemberDAO dao = new MemberDAO();
 		boolean rstComplete = dao.memberUpdate(value, type, nickname);
-		
+
 		PrintWriter out = response.getWriter();
 		JSONObject resJson = new JSONObject();
 		if(rstComplete) resJson.put("result", "OK");
