@@ -214,4 +214,23 @@ public class MemberDAO {
 		return cnt;
 	}
 	
+	public int updatePfImg(String imgUrl, String memberNum) {
+		int cnt = 0;
+		try {
+			conn = Common.getConnection();
+			String sql = "UPDATE MEMBER SET PF_IMG = ? WHERE MEMBER_NUM = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, imgUrl);
+			pstmt.setString(2, memberNum);
+			cnt = pstmt.executeUpdate();
+			
+			Common.close(pstmt);
+			Common.close(conn);
+			
+			return cnt;
+
+		} catch (Exception e) { e.printStackTrace();}
+		return cnt;
+	}
+	
 }
