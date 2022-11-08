@@ -45,20 +45,21 @@ public class WriteSearchServlet extends HttpServlet {
 		// 요청 받은 메시지 JSON 파싱
 		JSONObject jsonObj = Common.getJsonObj(sb); // 여기까지가 공통 루틴
 
-		String reqCmd = (String)jsonObj.get("target"); // 요청된 target를 받음
+		String getQuery = (String)jsonObj.get("query"); // 요청된 target를 받음
+		String offsetNum = (String)jsonObj.get("offsetNum");
+		String limitNum = (String)jsonObj.get("limitNum");
 		PrintWriter out = response.getWriter(); // 출력을 위해 만듦, 출력 스트림에 텍스트를 보내겠다는 뜻
 
-		System.out.print(reqCmd);
+		System.out.print(getQuery);
 
 		WriteDAO dao = new WriteDAO();
-		List<WriteVO> list = dao.writeSearchSelect();
+		List<WriteVO> list = dao.writeSearchSelect(getQuery, offsetNum, limitNum);
 		JSONArray writeArray = new JSONArray();
 
 		for(WriteVO e : list) {
 			JSONObject writeInfo = new JSONObject();
-			writeInfo.put("boardName", e.getBoardName());
+			writeInfo.put("writeNum", e.getWriteNum());
 			writeInfo.put("writeName", e.getWriteName());
-			writeInfo.put("pfImg", e.getPfImg());
 			writeInfo.put("writeDate", e.getWriteDateStr());
 			writeInfo.put("nickname", e.getNickname());
 			writeInfo.put("writeContent", e.getWriteContents());
@@ -68,6 +69,7 @@ public class WriteSearchServlet extends HttpServlet {
 			writeArray.add(writeInfo);
 		}
 		out.print(writeArray);
+		System.out.println(writeArray);
 	}
 
 }
