@@ -258,7 +258,8 @@ public class WriteDAO {
 		// 내 게시글 목록 서블릿
 		public List<WriteVO> myWriteSelect(String reqBoardName, String offsetNum, String limitNum) {
 			List<WriteVO> list = new ArrayList<>();
-	        String sql = "SELECT DISTINCT COUNT(*) \"좋아요수\", W.WRITE_NUM \"게시글번호\", BOARD_NAME \"게시판명\",\r\n"
+	        String sql = "SELECT * FROM (SELECT ROWNUM NUM, TEMP.* FROM \r\n"
+	        		+ "(SELECT DISTINCT COUNT(*) \"좋아요수\", W.WRITE_NUM \"게시글번호\", BOARD_NAME \"게시판명\",\r\n"
 	        		+ "WRITE_NAME \"게시글명\", NICKNAME \"글작성자\", \r\n"
 	        		+ "WRITE_DATE \"작성일\", WRITE_CONTENTS \"글내용\",\r\n"
 	        		+ "(SELECT COUNT(*) FROM COMMENTS C WHERE C.WRITE_NUM = W.WRITE_NUM) \"댓글수\"\r\n"
