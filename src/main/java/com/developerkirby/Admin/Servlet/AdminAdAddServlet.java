@@ -46,10 +46,10 @@ public class AdminAdAddServlet extends HttpServlet {
 		      JSONObject jsonObj = Common.getJsonObj(sb);
 			  String getAd_name = (String)jsonObj.get("ad_name");
 			  String getAd_url = (String)jsonObj.get("ad_url");
-//			  String setAd_img = (String)jsonObj.get("ad_img");
+			  String getAd_img = (String)jsonObj.get("ad_img");
 			  
 			  AdminAdDAO dao = new AdminAdDAO();
-			  dao.adminAdAdd(getAd_name, getAd_url);
+			  dao.adminAdAdd(getAd_name, getAd_url, getAd_img);
 			  
 			// request에 대한 response를 출력
 				PrintWriter out = response.getWriter();

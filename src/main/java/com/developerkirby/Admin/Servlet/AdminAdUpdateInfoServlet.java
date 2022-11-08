@@ -57,6 +57,7 @@ public class AdminAdUpdateInfoServlet extends HttpServlet {
 
 	         adminAdUpdateInfo.put("ad_name", e.getAd_name());
 	         adminAdUpdateInfo.put("ad_url", e.getAd_url());
+	         adminAdUpdateInfo.put("ad_img", e.getAd_img());
 	      }
 	      out.print(adminAdUpdateInfo);
 	   }

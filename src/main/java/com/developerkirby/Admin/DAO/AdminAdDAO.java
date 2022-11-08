@@ -75,8 +75,8 @@ public class AdminAdDAO {
 		}
 	  }
 	  
-	  public boolean adminAdUpdate(String ad_num, String ad_name, String ad_url) {
-		  String sql = "UPDATE ADMIN_AD SET AD_NAME = ?, AD_URL = ? WHERE AD_NUM = ?";
+	  public boolean adminAdUpdate(String ad_num, String ad_name, String ad_url, String ad_img) {
+		  String sql = "UPDATE ADMIN_AD SET AD_NAME = ?, AD_URL = ?, AD_IMG = ? WHERE AD_NUM = ?";
 		  int ad_num_int = Integer.parseInt(ad_num);
 		  System.out.println("보낸 UPDATE ad_num 값: " + ad_num_int);
 		  try {
@@ -85,7 +85,8 @@ public class AdminAdDAO {
 				
 				pstmt.setString(1, ad_name);
 				pstmt.setString(2, ad_url);
-				pstmt.setInt(3, ad_num_int); 
+				pstmt.setString(3, ad_img);
+				pstmt.setInt(4, ad_num_int); 
 				pstmt.executeUpdate();
 				
 				Common.close(pstmt);
@@ -98,7 +99,7 @@ public class AdminAdDAO {
 	  
 	  public List<AdminAdVO> AdUpdateInfo(String ad_num) {
 	      List<AdminAdVO> list = new ArrayList<>();
-	      String sql = "SELECT AD_NAME, AD_URL FROM ADMIN_AD WHERE AD_NUM = ?";
+	      String sql = "SELECT AD_NAME, AD_URL, AD_IMG FROM ADMIN_AD WHERE AD_NUM = ?";
 	      
 //	      int ad_num_int = Integer.parseInt(ad_num);
 		  System.out.println("보낸 UPDATE INFO ad_num 값: " +ad_num);
@@ -112,12 +113,12 @@ public class AdminAdDAO {
 	         while(rs.next()) {
 	            String ad_name = rs.getString("AD_NAME");
 	            String ad_url = rs.getString("AD_URL");
-//	            String ad_img = rs.getString("AD_IMG");
+	            String ad_img = rs.getString("AD_IMG");
 	            
 	            AdminAdVO vo = new AdminAdVO();
 	            vo.setAd_name(ad_name);
 	            vo.setAd_url(ad_url);
-//	            vo.setAd_img(ad_img);
+	            vo.setAd_img(ad_img);
 	            
 	            list.add(vo);
 	         }
@@ -130,14 +131,15 @@ public class AdminAdDAO {
 	      }
 	      return list;
 	   }
-	  public boolean adminAdAdd(String ad_name, String ad_url) {
+	  public boolean adminAdAdd(String ad_name, String ad_url, String ad_img) {
 		  System.out.println("광고등록시작");
-		  String sql = "INSERT INTO ADMIN_AD(AD_NUM, AD_NAME, AD_URL) VALUES (AD_NUM.NEXTVAL, ?, ?)";
+		  String sql = "INSERT INTO ADMIN_AD(AD_NUM, AD_NAME, AD_URL, AD_IMG) VALUES (AD_NUM.NEXTVAL, ?, ?, ?)";
 		  try {
 			  conn = Common.getConnection();
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, ad_name);
 				pstmt.setString(2, ad_url);
+				pstmt.setString(3, ad_img);
 				pstmt.executeUpdate();
 				
 				Common.close(pstmt);
