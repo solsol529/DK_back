@@ -1,4 +1,4 @@
-package com.DK.admin.adSendEmail;
+package com.developerkirby.Admin;
 
 import java.util.List;
 

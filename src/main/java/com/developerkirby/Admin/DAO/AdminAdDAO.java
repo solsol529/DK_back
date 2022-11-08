@@ -1,4 +1,4 @@
-package com.DK.admin.dao;
+package com.developerkirby.Admin.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,9 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.DK.admin.common.Common;
-import com.DK.admin.vo.AdminAdVO;
-
+import com.developerkirby.Admin.Common;
+import com.developerkirby.Admin.VO.AdminAdVO;
 
 
 public class AdminAdDAO {
@@ -132,6 +131,7 @@ public class AdminAdDAO {
 	      return list;
 	   }
 	  public boolean adminAdAdd(String ad_name, String ad_url) {
+		  System.out.println("광고등록시작");
 		  String sql = "INSERT INTO ADMIN_AD(AD_NUM, AD_NAME, AD_URL) VALUES (AD_NUM.NEXTVAL, ?, ?)";
 		  try {
 			  conn = Common.getConnection();

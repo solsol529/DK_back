@@ -1,4 +1,4 @@
-package com.DK.admin.vo;
+package com.developerkirby.Admin.VO;
 
 public class AdminAdVO {
 	

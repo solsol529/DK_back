@@ -1,4 +1,4 @@
-package com.DK.admin.servlet;
+package com.developerkirby.Admin.Servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.DK.admin.common.Common;
-import com.DK.admin.dao.AdminAdDAO;
-import com.DK.admin.vo.AdminAdVO;
+import com.developerkirby.Admin.Common;
+import com.developerkirby.Admin.DAO.AdminAdDAO;
+import com.developerkirby.Admin.VO.AdminAdVO;
 
 @WebServlet("/AdminAdUpdateServlet")
 public class AdminAdUpdateServlet extends HttpServlet {
