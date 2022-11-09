@@ -59,16 +59,16 @@ public class MemberPhoneRegServlet extends HttpServlet {
 			resJson.put("result", "OK");
 			resJson.put("code", verifyCode);
 			System.out.println("인증번호 : "+verifyCode);
-//			String match = "[^0-9]";
-//			getPhone = getPhone.replaceAll(match, "");
-//			boolean isSend = sens_sms.sendSms(getPhone, verifyCode);
-//
-//			if(isSend) {
-//				resJson.put("result", "OK");
-//				resJson.put("code", verifyCode);
-//				System.out.println("인증번호 : "+verifyCode);
-//			}
-//			else resJson.put("result", "NOK");
+			String match = "[^0-9]";
+			getPhone = getPhone.replaceAll(match, "");
+			boolean isSend = sens_sms.sendSms(getPhone, verifyCode);
+
+			if(isSend) {
+				resJson.put("result", "OK");
+				resJson.put("code", verifyCode);
+				System.out.println("인증번호 : "+verifyCode);
+			}
+			else resJson.put("result", "NOK");
 		} else resJson.put("result", "DUP");
 		
 		out.print(resJson);
